@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DtoGenerator", "DtoGenerator\DtoGenerator.csproj", "{8D24CC1A-E76F-43AC-936A-49BC2A7C2B44}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{7207098A-99F7-45FE-A324-7014C4793613}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8D24CC1A-E76F-43AC-936A-49BC2A7C2B44} = {8D24CC1A-E76F-43AC-936A-49BC2A7C2B44}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
