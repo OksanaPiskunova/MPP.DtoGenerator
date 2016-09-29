@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using DtoGenerator;
 
 namespace Test
@@ -16,8 +17,12 @@ namespace Test
             IList<DtoClassDescription> dtoClassDescriptions = 
                 JsonParser.ParseJsonData(jsonClassDescriptions);
 
+            int maxTaskCount = Int32.Parse(ConfigurationManager.AppSettings["maxTaskCount"]);
+            string dtoNamespace = ConfigurationManager.AppSettings["dtoNamespace"];
 
-            
+            Console.WriteLine(maxTaskCount);
+            Console.WriteLine(dtoNamespace);
+
             Console.Read();
         }
     }
