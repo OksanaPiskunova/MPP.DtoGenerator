@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DtoGenerator
+﻿namespace DtoGenerator.Descriptions
 {
     public sealed class DtoPropertyDescription
     {
@@ -14,9 +8,9 @@ namespace DtoGenerator
 
         public DtoPropertyDescription(string name, string type, string format)
         {
-            this.Name = name;
-            this.Type = type;
-            this.Format = format;
+            Name = name;
+            Type = type;
+            Format = format;
         }
     }
 }
