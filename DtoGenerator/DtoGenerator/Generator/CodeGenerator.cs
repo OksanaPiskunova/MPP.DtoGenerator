@@ -7,6 +7,16 @@ namespace DtoGenerator.Generator
 {
     internal sealed class CodeGenerator : ICodeGenerator
     {
+        private TypeTable _typeTable;
+
+        private const string classIndent = "\t";
+        private const string propertyIndent = "\t\t";
+
+        public CodeGenerator(TypeTable typeTable)
+        {
+            _typeTable = typeTable;
+        }
+
         public string GenerateCode(DtoClassDescription classDescription, string classNamespace)
         {
             var namespaceDeclaration = GenerateNamespace(classNamespace);
@@ -39,7 +49,7 @@ namespace DtoGenerator.Generator
         {
             var classDeclaration = ClassDeclaration(Identifier(TriviaList(Space), 
                 classDescription.ClassName, TriviaList(Space)));
-            classDeclaration = classDeclaration.WithModifiers(TokenList(Token(TriviaList(Whitespace("\t")), 
+            classDeclaration = classDeclaration.WithModifiers(TokenList(Token(TriviaList(Whitespace(classIndent)), 
                 PublicKeyword, TriviaList(Space)), Token(TriviaList(), SealedKeyword, TriviaList(Space))));
             classDeclaration = classDeclaration.WithOpenBraceToken(Token(TriviaList(), 
                 OpenBraceToken, TriviaList(LineFeed)));
@@ -49,14 +59,16 @@ namespace DtoGenerator.Generator
 
         private MemberDeclarationSyntax GenerateDtoProperty(DtoPropertyDescription propertyDescription)
         {
-            var propertyDeclaration = PropertyDeclaration(PredefinedType(Token(TriviaList(), IntKeyword, 
-                TriviaList(Space))), Identifier(TriviaList(), propertyDescription.Name, TriviaList(Space)));
-            propertyDeclaration = propertyDeclaration.WithModifiers(TokenList(Token(TriviaList(Whitespace("\t\t")), 
+            var type = _typeTable.GetNetType(propertyDescription.Type, propertyDescription.Format);
+
+            var propertyDeclaration = PropertyDeclaration(IdentifierName(type), Identifier(TriviaList(Space), 
+                propertyDescription.Name, TriviaList(Space)));
+            propertyDeclaration = propertyDeclaration.WithModifiers(TokenList(Token(TriviaList(Whitespace(propertyIndent)), 
                 PublicKeyword, TriviaList(Space))));
            propertyDeclaration = propertyDeclaration.WithAccessorList(AccessorList(
                List(new[]{
                    AccessorDeclaration(GetAccessorDeclaration).WithKeyword(Token(GetKeyword))
-                   .WithSemicolonToken(Token(TriviaList(),SemicolonToken,TriviaList(Space))),
+                   .WithSemicolonToken(Token(TriviaList(), SemicolonToken, TriviaList(Space))),
                    AccessorDeclaration(SetAccessorDeclaration).WithKeyword(Token(SetKeyword))
                    .WithSemicolonToken(Token(TriviaList(), SemicolonToken, TriviaList(Space)))}))
                .WithOpenBraceToken(Token(TriviaList(), OpenBraceToken, TriviaList(Space)))

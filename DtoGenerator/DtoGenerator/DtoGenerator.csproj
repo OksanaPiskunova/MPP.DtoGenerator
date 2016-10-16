@@ -60,13 +60,23 @@
     <Compile Include="DtoGenerator.cs" />
     <Compile Include="GeneratedCodeItem.cs" />
     <Compile Include="Generator\ICodeGenerator.cs" />
+    <Compile Include="PluginsLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Generator\CodeGenerator.cs" />
+    <Compile Include="TypeTable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="PluginsLoader\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TypePluginInterface\TypePluginInterface.csproj">
+      <Project>{B3A5B30B-7169-4863-8ED6-D3DC5494377A}</Project>
+      <Name>TypePluginInterface</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
