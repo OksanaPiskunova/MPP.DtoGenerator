@@ -51,6 +51,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader\IFileReader.cs" />
     <Compile Include="Reader\JsonFileReader.cs" />
+    <Compile Include="Writer\CodeWriter.cs" />
+    <Compile Include="Writer\IFileWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
