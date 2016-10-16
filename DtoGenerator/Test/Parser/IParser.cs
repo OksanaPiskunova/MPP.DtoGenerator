@@ -1,6 +1,4 @@
-﻿using DtoGenerator;
-
-namespace Test.Parser
+﻿namespace Test.Parser
 {
     public interface IParser<out T>
     {

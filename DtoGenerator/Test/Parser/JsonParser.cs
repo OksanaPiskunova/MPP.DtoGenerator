@@ -1,4 +1,4 @@
-﻿using DtoGenerator;
+﻿using DtoGenerator.Descriptions;
 using Newtonsoft.Json;
 
 namespace Test.Parser
