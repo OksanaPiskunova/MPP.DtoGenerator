@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using DtoGenerator;
 using DtoGenerator.Descriptions;
+using Test.ApplicationSettings;
 using Test.Parser;
 using Test.Reader;
 using Test.Writer;
@@ -61,6 +61,7 @@ namespace Test
             var generatedCodeList = GenerateDtoClasses(dtoClassDescriptions);
             WriteCodeToFile(generatedCodeList, outputDirectoryPath);
 
+            Console.WriteLine("Press Enter to exit...");
             Console.Read();
         }
     }
