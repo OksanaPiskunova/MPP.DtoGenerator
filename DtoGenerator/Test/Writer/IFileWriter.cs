@@ -2,8 +2,8 @@
 
 namespace Test.Writer
 {
-    internal interface IFileWriter
+    internal interface IFileWriter<T>
     {
-        void Write(IDictionary<string, string> generatedCodeDictionary);
+        void Write(List<T> generatedCodeList);
     }
 }
