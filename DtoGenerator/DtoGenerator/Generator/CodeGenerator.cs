@@ -7,10 +7,10 @@ namespace DtoGenerator.Generator
 {
     internal sealed class CodeGenerator : ICodeGenerator
     {
-        private TypeTable _typeTable;
+        private readonly TypeTable _typeTable;
 
-        private const string classIndent = "\t";
-        private const string propertyIndent = "\t\t";
+        private const string ClassIndent = "\t";
+        private const string PropertyIndent = "\t\t";
 
         public CodeGenerator(TypeTable typeTable)
         {
@@ -49,7 +49,7 @@ namespace DtoGenerator.Generator
         {
             var classDeclaration = ClassDeclaration(Identifier(TriviaList(Space), 
                 classDescription.ClassName, TriviaList(Space)));
-            classDeclaration = classDeclaration.WithModifiers(TokenList(Token(TriviaList(Whitespace(classIndent)), 
+            classDeclaration = classDeclaration.WithModifiers(TokenList(Token(TriviaList(Whitespace(ClassIndent)), 
                 PublicKeyword, TriviaList(Space)), Token(TriviaList(), SealedKeyword, TriviaList(Space))));
             classDeclaration = classDeclaration.WithOpenBraceToken(Token(TriviaList(), 
                 OpenBraceToken, TriviaList(LineFeed)));
@@ -63,7 +63,7 @@ namespace DtoGenerator.Generator
 
             var propertyDeclaration = PropertyDeclaration(IdentifierName(type), Identifier(TriviaList(Space), 
                 propertyDescription.Name, TriviaList(Space)));
-            propertyDeclaration = propertyDeclaration.WithModifiers(TokenList(Token(TriviaList(Whitespace(propertyIndent)), 
+            propertyDeclaration = propertyDeclaration.WithModifiers(TokenList(Token(TriviaList(Whitespace(PropertyIndent)), 
                 PublicKeyword, TriviaList(Space))));
            propertyDeclaration = propertyDeclaration.WithAccessorList(AccessorList(
                List(new[]{

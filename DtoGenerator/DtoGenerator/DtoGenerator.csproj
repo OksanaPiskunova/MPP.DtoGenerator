@@ -68,9 +68,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PluginsLoader\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\TypePluginInterface\TypePluginInterface.csproj">
       <Project>{B3A5B30B-7169-4863-8ED6-D3DC5494377A}</Project>
