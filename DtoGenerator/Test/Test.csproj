@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationSettings\ApplicationSettingsReader.cs" />
+    <Compile Include="ApplicationSettings\IApplicationSettingsReader.cs" />
     <Compile Include="Parser\IParser.cs" />
     <Compile Include="Parser\JsonParser.cs" />
     <Compile Include="Program.cs" />
