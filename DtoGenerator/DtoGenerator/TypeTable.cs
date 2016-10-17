@@ -6,11 +6,11 @@ namespace DtoGenerator
 {
     internal sealed class TypeTable
     {
-        private Dictionary<string[], string> typeTable;
+        private Dictionary<string[], string> _typeTable;
 
         public TypeTable()
         {
-            typeTable = new Dictionary<string[], string>();
+            _typeTable = new Dictionary<string[], string>();
         }
 
         public void AddType(INetType typePlugin)
@@ -20,18 +20,18 @@ namespace DtoGenerator
             var netType = typePlugin.NetType;
 
             var key = new[] {type, format};
-            typeTable.Add(key, netType);
+            _typeTable.Add(key, netType);
         }
 
         public string GetNetType(string type, string format)
         {
             var netType = string.Empty;
-            var typeTableKeys = typeTable.Keys;
+            var typeTableKeys = _typeTable.Keys;
             foreach (var key in typeTableKeys)
             {
-                if (Enumerable.SequenceEqual(key, new[] { type, format }))
+                if (key.SequenceEqual(new[] { type, format }))
                 {
-                    return typeTable[key];
+                    return _typeTable[key];
                 }
             }
 
