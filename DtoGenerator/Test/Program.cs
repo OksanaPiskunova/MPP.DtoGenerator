@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DtoGenerator;
 using DtoGenerator.Descriptions;
 using Test.ApplicationSettings;
 using Test.Parser;
@@ -35,13 +36,13 @@ namespace Test
             _pluginDirectoryPath = applicationSettingsReader.PluginsDirectory;
         }
 
-        private static IDictionary<string, string> GenerateDtoClasses(DtoClassDescription[] dtoClassDescriptions)
+        private static List<GeneratedCodeItem> GenerateDtoClasses(DtoClassDescription[] dtoClassDescriptions)
         {
             var dtoGenerator = new DtoGenerator.DtoGenerator(_maxTaskCount, _pluginDirectoryPath);
             return dtoGenerator.GenerateDtoClasses(dtoClassDescriptions, _classesNamespace);
         }
 
-        private static void WriteCodeToFile(IDictionary<string, string> generatedCodeList, string directoryPath)
+        private static void WriteCodeToFile(List<GeneratedCodeItem> generatedCodeList, string directoryPath)
         {
             var codeWriter = new CodeWriter(directoryPath);
             codeWriter.Write(generatedCodeList);
