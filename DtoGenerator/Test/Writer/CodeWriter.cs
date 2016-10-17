@@ -4,7 +4,7 @@ using DtoGenerator;
 
 namespace Test.Writer
 {
-    internal class CodeWriter : IFileWriter<GeneratedCodeItem>
+    internal class CodeWriter : IFileWriter
     {
         private readonly string _directoryPath;
 
@@ -13,24 +13,24 @@ namespace Test.Writer
             _directoryPath = directoryPath;
         }
 
-        public void Write(List<GeneratedCodeItem> generatedCodeList)
+        public void Write(IDictionary<string, string> generatedCodeDictionary)
         {
             CreateDirectoryIfNotExist();
 
-            foreach (var generatedCodeItem in generatedCodeList)
+            foreach (var generatedCodeItem in generatedCodeDictionary)
             {
                 WriteClassCodeToFile(generatedCodeItem);
             }
         }
 
-        private void WriteClassCodeToFile(GeneratedCodeItem generatedCodeItem)
+        private void WriteClassCodeToFile(KeyValuePair<string, string> generatedCodeItem)
         {
-            var fileName = GetOutputFileName(generatedCodeItem.ClassName);
+            var fileName = GetOutputFileName(generatedCodeItem.Key);
             using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
                 using (var sw = new StreamWriter(fs))
                 {
-                    sw.Write(generatedCodeItem.Code);
+                    sw.Write(generatedCodeItem.Value);
                 }
             }
         }

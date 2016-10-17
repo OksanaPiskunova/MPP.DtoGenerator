@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using DtoGenerator.Descriptions;
 using DtoGenerator.Generator;
 
@@ -6,7 +8,8 @@ namespace DtoGenerator
 {
     public sealed class DtoGenerator
     {
-        private TypeTable _typeTable;
+        private readonly TypeTable _typeTable;
+        private volatile object _syncRoot = new object();
 
         public DtoGenerator(int maxThreadCount, string pluginsDirectory)
         {
@@ -17,13 +20,25 @@ namespace DtoGenerator
         {
             var codeGenerator = new CodeGenerator(_typeTable);
             var generatedCodeList = new List<GeneratedCodeItem>();
+            var countdown = new CountdownEvent(dtoClassDescriptions.Length);
 
             foreach (var classDescription in dtoClassDescriptions)
             {
-                var code = codeGenerator.GenerateCode(classDescription, classesNamespace);
-                var generatedCodeItem = new GeneratedCodeItem(classDescription.ClassName, code);
-                generatedCodeList.Add(generatedCodeItem);
+                ThreadPool.QueueUserWorkItem(data =>
+                {
+                    var code = codeGenerator.GenerateCode(classDescription, classesNamespace);
+                    var generatedCodeItem = new GeneratedCodeItem(classDescription.ClassName, code);
+                    generatedCodeList.Add(generatedCodeItem);
+
+                    lock (_syncRoot)
+                    {
+                        Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+                        countdown.Signal();
+                    }
+                });
             }
+
+            countdown.Wait();
 
             return generatedCodeList;
         }
