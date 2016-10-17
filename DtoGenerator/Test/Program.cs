@@ -2,26 +2,64 @@
 using System.Collections.Generic;
 using System.Configuration;
 using DtoGenerator;
+using DtoGenerator.Descriptions;
+using Test.Parser;
+using Test.Reader;
+using Test.Writer;
 
 namespace Test
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static int _maxTaskCount;
+        private static string _classesNamespace;
+        private static string _pluginDirectoryPath;
+
+        private static string ReadJsonFromFile(string jsonFileName)
         {
-            string jsonFileName = args[0];
+            var fileReader = new JsonFileReader();
+            return fileReader.ReadToEnd(jsonFileName);
+        }
 
-            JsonParser jsonParser = new JsonParser();
-            string jsonClassDescriptions = 
-                JsonParser.ReadJsonDataFromFile(jsonFileName);
-            IList<DtoClassDescription> dtoClassDescriptions = 
-                JsonParser.ParseJsonData(jsonClassDescriptions);
+        private static DtoClassDescription[] ParseJson(string jsonClassDescriptions)
+        {
+            var jsonParser = new JsonParser();
+            return jsonParser.Parse(jsonClassDescriptions);
+        }
 
-            int maxTaskCount = Int32.Parse(ConfigurationManager.AppSettings["maxTaskCount"]);
-            string dtoNamespace = ConfigurationManager.AppSettings["dtoNamespace"];
+        private static void ReadApplicationSettings()
+        {
+            var applicationSettingsReader = new ApplicationSettingsReader();
 
-            Console.WriteLine(maxTaskCount);
-            Console.WriteLine(dtoNamespace);
+            _maxTaskCount = applicationSettingsReader.MaxTaskCount;
+            _classesNamespace = applicationSettingsReader.ClassesNamespace;
+            _pluginDirectoryPath = applicationSettingsReader.PluginsDirectory;
+        }
+
+        private static List<GeneratedCodeItem> GenerateDtoClasses(DtoClassDescription[] dtoClassDescriptions)
+        {
+            var dtoGenerator = new DtoGenerator.DtoGenerator(_maxTaskCount, _pluginDirectoryPath);
+            return dtoGenerator.GenerateDtoClasses(dtoClassDescriptions, _classesNamespace);
+        }
+
+        private static void WriteCodeToFile(List<GeneratedCodeItem> generatedCodeList, string directoryPath)
+        {
+            var codeWriter = new CodeWriter(directoryPath);
+            codeWriter.Write(generatedCodeList);
+        }
+
+        public static void Main(string[] args)
+        {
+            var jsonFileName = args[0];
+            var outputDirectoryPath = args[1];
+            
+            var jsonClassDescriptions = ReadJsonFromFile(jsonFileName);
+            var dtoClassDescriptions = ParseJson(jsonClassDescriptions);
+
+            ReadApplicationSettings();
+
+            var generatedCodeList = GenerateDtoClasses(dtoClassDescriptions);
+            WriteCodeToFile(generatedCodeList, outputDirectoryPath);
 
             Console.Read();
         }
