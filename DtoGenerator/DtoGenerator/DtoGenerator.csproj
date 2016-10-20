@@ -58,7 +58,6 @@
     <Compile Include="Descriptions\DtoClassDescription.cs" />
     <Compile Include="Descriptions\DtoPropertyDescription.cs" />
     <Compile Include="DtoGenerator.cs" />
-    <Compile Include="GeneratedCodeItem.cs" />
     <Compile Include="Generator\ICodeGenerator.cs" />
     <Compile Include="PluginsLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

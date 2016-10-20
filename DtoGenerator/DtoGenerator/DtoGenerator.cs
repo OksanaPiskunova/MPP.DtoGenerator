@@ -8,11 +8,12 @@ namespace DtoGenerator
 {
     public sealed class DtoGenerator
     {
+        private readonly int _maxThreadCount;
         private readonly TypeTable _typeTable;
-        private volatile object _syncRoot = new object();
 
         public DtoGenerator(int maxThreadCount, string pluginsDirectory)
         {
+            _maxThreadCount = maxThreadCount;
             _typeTable = LoadPlugins(pluginsDirectory);
         }
 
@@ -20,25 +21,46 @@ namespace DtoGenerator
         {
             var codeGenerator = new CodeGenerator(_typeTable);
             var generatedCodeDictionary = new ConcurrentDictionary<string, string>();
-            var countdown = new CountdownEvent(dtoClassDescriptions.Length);
+            var resetEvents = InitializeResetEvents(_maxThreadCount);
 
             foreach (var classDescription in dtoClassDescriptions)
             {
+                var eventIndex = WaitHandle.WaitAny(resetEvents);
+                resetEvents[eventIndex].Reset();
+
                 ThreadPool.QueueUserWorkItem(data =>
                 {
                     var code = codeGenerator.GenerateCode(classDescription, classesNamespace);
                     generatedCodeDictionary[classDescription.ClassName] = code;
 
-                    lock (_syncRoot)
-                    {
-                        countdown.Signal();
-                    }
+                    resetEvents[eventIndex].Set();
                 });
             }
 
-            countdown.Wait();
+            WaitHandle.WaitAll(resetEvents);
+            DisposeResetEvents(resetEvents);
 
             return generatedCodeDictionary;
+        }
+
+        private ManualResetEvent[] InitializeResetEvents(int eventCount)
+        {
+            var resetEvents = new ManualResetEvent[eventCount];
+
+            for (var eventIndex = 0; eventIndex < eventCount; eventIndex++)
+            {
+                resetEvents[eventIndex] = new ManualResetEvent(true);
+            }
+
+            return resetEvents;
+        }
+
+        private void DisposeResetEvents(ManualResetEvent[] resetEvents)
+        {
+            foreach (var resetEvent in resetEvents)
+            {
+                resetEvent.Dispose();
+            }
         }
 
         private TypeTable LoadPlugins(string pluginsDirectory)
