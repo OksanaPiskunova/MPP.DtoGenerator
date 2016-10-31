@@ -58,11 +58,14 @@
     <Compile Include="Descriptions\DtoClassDescription.cs" />
     <Compile Include="Descriptions\DtoPropertyDescription.cs" />
     <Compile Include="DtoGenerator.cs" />
+    <Compile Include="Generator\CodeGeneratorException.cs" />
     <Compile Include="Generator\ICodeGenerator.cs" />
     <Compile Include="PluginsLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Generator\CodeGenerator.cs" />
+    <Compile Include="TypeNotFoundException.cs" />
     <Compile Include="TypeTable.cs" />
+    <Compile Include="TypeTableException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -9,6 +9,9 @@ namespace DtoGenerator
     {
         public TypeTable LoadTypesFromPlugins(string pluginsDirectoryPath)
         {
+            if (pluginsDirectoryPath == null) throw new ArgumentNullException(nameof(pluginsDirectoryPath));
+            if (!Directory.Exists(pluginsDirectoryPath)) throw new DirectoryNotFoundException(nameof(pluginsDirectoryPath));
+
             var typeTable = new TypeTable();
 
             foreach (var file in Directory.EnumerateFiles(Path.GetFullPath(pluginsDirectoryPath)))
@@ -27,6 +30,8 @@ namespace DtoGenerator
                     // ignored
                 }
             }
+
+            if (typeTable.Count == 0) throw new TypeTableException("TypeTable is empty.");
 
             return typeTable;
         }

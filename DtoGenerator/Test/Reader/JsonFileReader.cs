@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Test.Reader
 {
@@ -6,8 +7,9 @@ namespace Test.Reader
     {
         public string ReadToEnd(string fileName)
         {
-            string jsonData;
+            if (fileName == null) throw new ArgumentNullException(nameof(fileName));
 
+            string jsonData;
             using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
                 using (var sr = new StreamReader(fs))

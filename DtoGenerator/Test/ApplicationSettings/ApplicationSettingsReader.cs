@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 
 namespace Test.ApplicationSettings
 {
@@ -12,29 +13,37 @@ namespace Test.ApplicationSettings
         {
             get
             {
-                return int.Parse(GetSettingValue(MaxTaskCountSettingKey));
+                try
+                {
+                    return int.Parse(GetSettingValue(MaxTaskCountSettingKey));
+                }
+                catch (FormatException)
+                {
+                    throw new BadArgumentValueException("The maximum number of tasks must be a positive integer.");
+                }
+                catch (OverflowException)
+                {
+                    throw new BadArgumentValueException("The maximum number of tasks must be a positive integer.");
+                }
             }
         }
 
-        public string ClassesNamespace
-        {
-            get
-            {
-                return GetSettingValue(ClassesNamespaceSettingKey);
-            }
-        }
+        public string ClassesNamespace => GetSettingValue(ClassesNamespaceSettingKey);
 
-        public string PluginsDirectory
-        {
-            get
-            {
-                return GetSettingValue(PluginsDirectorySettingKey);
-            }
-        }
+        public string PluginsDirectory => GetSettingValue(PluginsDirectorySettingKey);
 
         public string GetSettingValue(string settingKey)
         {
-            return ConfigurationManager.AppSettings[settingKey];
+            if (settingKey == null) throw new ArgumentNullException(nameof(settingKey));
+
+            try
+            {
+                return ConfigurationManager.AppSettings[settingKey];
+            }
+            catch (ConfigurationErrorsException)
+            {
+                throw new SettingsNotFoundException(nameof(settingKey));
+            }
         }
     }
 }

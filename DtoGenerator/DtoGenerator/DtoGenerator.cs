@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using DtoGenerator.Descriptions;
@@ -13,12 +14,20 @@ namespace DtoGenerator
 
         public DtoGenerator(int maxThreadCount, string pluginsDirectory)
         {
+            if (maxThreadCount <= 0) throw new ArgumentOutOfRangeException(nameof(maxThreadCount));
+            if (string.IsNullOrEmpty(pluginsDirectory))
+                throw new ArgumentException("Value cannot be null or empty.", nameof(pluginsDirectory));
+
             _maxThreadCount = maxThreadCount;
             _typeTable = LoadPlugins(pluginsDirectory);
         }
 
         public IDictionary<string, string> GenerateDtoClasses(DtoClassDescription[] dtoClassDescriptions, string classesNamespace)
         {
+            if (dtoClassDescriptions == null) throw new ArgumentNullException(nameof(dtoClassDescriptions));
+            if (string.IsNullOrEmpty(classesNamespace))
+                throw new ArgumentException("Value cannot be null or empty.", nameof(classesNamespace));
+
             var codeGenerator = new CodeGenerator(_typeTable);
             var generatedCodeDictionary = new ConcurrentDictionary<string, string>();
             var resetEvents = InitializeResetEvents(_maxThreadCount);
@@ -30,8 +39,15 @@ namespace DtoGenerator
 
                 ThreadPool.QueueUserWorkItem(data =>
                 {
-                    var code = codeGenerator.GenerateCode(classDescription, classesNamespace);
-                    generatedCodeDictionary[classDescription.ClassName] = code;
+                    try
+                    {
+                        var code = codeGenerator.GenerateCode(classDescription, classesNamespace);
+                        generatedCodeDictionary[classDescription.ClassName] = code;
+                    }
+                    catch (TypeNotFoundException)
+                    {
+                        // ignored
+                    }
 
                     resetEvents[eventIndex].Set();
                 });

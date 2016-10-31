@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Test.Writer
@@ -9,11 +10,15 @@ namespace Test.Writer
 
         public CodeWriter(string directoryPath)
         {
+            if (directoryPath == null) throw new ArgumentNullException(nameof(directoryPath));
+
             _directoryPath = directoryPath;
         }
 
         public void Write(IDictionary<string, string> generatedCodeDictionary)
         {
+            if (generatedCodeDictionary == null) throw new ArgumentNullException(nameof(generatedCodeDictionary));
+
             CreateDirectoryIfNotExist();
 
             foreach (var generatedCodeItem in generatedCodeDictionary)
@@ -24,12 +29,15 @@ namespace Test.Writer
 
         private void WriteClassCodeToFile(KeyValuePair<string, string> generatedCodeItem)
         {
-            var fileName = GetOutputFileName(generatedCodeItem.Key);
+            var className = generatedCodeItem.Key;
+            var code = generatedCodeItem.Value;
+
+            var fileName = GetOutputFileName(className);
             using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
                 using (var sw = new StreamWriter(fs))
                 {
-                    sw.Write(generatedCodeItem.Value);
+                    sw.Write(code);
                 }
             }
         }

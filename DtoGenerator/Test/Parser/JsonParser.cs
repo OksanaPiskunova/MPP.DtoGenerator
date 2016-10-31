@@ -1,4 +1,5 @@
-﻿using DtoGenerator.Descriptions;
+﻿using System;
+using DtoGenerator.Descriptions;
 using Newtonsoft.Json;
 
 namespace Test.Parser
@@ -7,6 +8,8 @@ namespace Test.Parser
     {
         public DtoClassDescription[] Parse(string classDescriptions)
         {
+            if (classDescriptions == null) throw new ArgumentNullException(nameof(classDescriptions));
+
             return JsonConvert.DeserializeObject<DtoClassDescription[]>(classDescriptions);
         }
     }
